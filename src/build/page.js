@@ -1,29 +1,22 @@
-// src/app/page.tsx
+// src/app/album.tsx
 import { jsx, jsxs } from "react/jsx-runtime";
-function Page() {
+async function Album() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/albums");
+  const albums = await response.json();
+  await new Promise((resolve) => setTimeout(resolve, 2e3));
   return /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("h1", { children: "Hello World!" }),
-    /* @__PURE__ */ jsx("p", { children: "It's a page!" }),
-    /* @__PURE__ */ jsxs("table", { children: [
-      /* @__PURE__ */ jsx("thead", { children: /* @__PURE__ */ jsxs("tr", { children: [
-        /* @__PURE__ */ jsx("th", { children: "Location" }),
-        /* @__PURE__ */ jsx("th", { children: "Path" })
-      ] }) }),
-      /* @__PURE__ */ jsxs("tbody", { children: [
-        /* @__PURE__ */ jsxs("tr", { children: [
-          /* @__PURE__ */ jsx("td", { children: "Home" }),
-          /* @__PURE__ */ jsx("td", { children: "/" })
-        ] }),
-        /* @__PURE__ */ jsxs("tr", { children: [
-          /* @__PURE__ */ jsx("td", { children: "Page" }),
-          /* @__PURE__ */ jsx("td", { children: "/page" })
-        ] }),
-        /* @__PURE__ */ jsxs("tr", { children: [
-          /* @__PURE__ */ jsx("td", { children: "404" }),
-          /* @__PURE__ */ jsx("td", { children: "/404" })
-        ] })
-      ] })
-    ] })
+    /* @__PURE__ */ jsx("h1", { children: "Albums" }),
+    /* @__PURE__ */ jsx("ul", { children: albums.map((album) => /* @__PURE__ */ jsx("li", { children: album.title }, album.id)) })
+  ] });
+}
+
+// src/app/page.tsx
+import { Suspense } from "react";
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
+function Page() {
+  return /* @__PURE__ */ jsxs2("html", { children: [
+    /* @__PURE__ */ jsx2("h1", { children: "Pop Music" }),
+    /* @__PURE__ */ jsx2(Suspense, { fallback: "loading", children: /* @__PURE__ */ jsx2(Album, {}) })
   ] });
 }
 export {

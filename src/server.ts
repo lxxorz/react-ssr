@@ -1,17 +1,15 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { Readable, Transform } from 'node:stream';
 import { build as esbuild } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { logger } from 'hono/logger';
-import { ReactNode, createElement } from 'react';
-import { serveStatic } from '@hono/node-server/serve-static';
-// import * as ReactServerDom from 'react-server-dom-webpack/server.browser';
-import { readFile, writeFile } from 'node:fs/promises';
-// import { parse } from 'es-module-lexer';
-import { relative } from 'node:path';
 
-import { renderToString } from "react-dom/server"
-import { hydrateRoot } from 'react-dom/client';
+import { createElement } from 'react';
+
+
+import { renderToPipeableStream } from "react-dom/server"
+import { BodyData } from 'hono/utils/body';
 
 
 const appDir = new URL('./app/', import.meta.url);
@@ -39,8 +37,54 @@ app.get('/', async (ctx) => {
   // @ts-ignore
   const Page = (await import("./build/page.js")).default;
   // @ts-ignore
-  const html = renderToString(createElement(Page));
-  return ctx.html(html)
+
+  // const pipe_stream = await ReactServerDom.renderToReadableStream(createElement(Page, { name: 'world' }))
+
+  const transform = new Transform({
+    transform(chunk, encoding, callback) {
+      this.push(chunk.toString())
+      console.log("Chunked: ", chunk.toString())
+      callback();
+    },
+  })
+
+  transform.on("close", () => {
+    console.log("closed")
+  })
+
+  // @ts-ignore
+  const comp = createElement(Page);
+
+  // @ts-ignore
+  const { pipe } = renderToPipeableStream(comp, {
+    bootstrapScripts: [],
+
+    // for streaming
+    onShellReady() {
+      pipe(transform)
+    },
+
+    // for static site generation
+    // onAllReady() {
+    //   pipe(transform)
+    // },
+    onShellError(error) {
+      console.error(error)
+    },
+
+    onError(error) {
+      console.error(error)
+    }
+  })
+
+  const stream = Readable.toWeb(transform) as ReadableStream<BodyData>;
+
+  return new Response(stream, {
+    "headers": {
+      "Content-Type": "text/html",
+      "Transfer-Encoding": "chunked"
+    }
+  })
 })
 
 async function build() {

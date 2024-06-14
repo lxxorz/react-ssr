@@ -1,15 +1,16 @@
 {
   "scripts": {
-    "dev": "tsx  src/server.ts"
+    "dev": "tsx   src/server.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.11.3",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "esbuild": "^0.21.5",
     "hono": "^4.4.6",
-    "react": "19.0.0-rc-dfd30974ab-20240613",
-    "react-dom": "19.0.0-rc-dfd30974ab-20240613",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
+    "react": "0.0.0-experimental-41b4714f1-20230328",
+    "react-dom": "0.0.0-experimental-41b4714f1-20230328",
+    "react-server-dom-webpack": "0.0.0-experimental-41b4714f1-20230328"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
