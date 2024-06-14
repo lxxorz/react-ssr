@@ -36,9 +36,6 @@ app.get('/', async (ctx) => {
 
   // @ts-ignore
   const Page = (await import("./build/page.js")).default;
-  // @ts-ignore
-
-  // const pipe_stream = await ReactServerDom.renderToReadableStream(createElement(Page, { name: 'world' }))
 
   const transform = new Transform({
     transform(chunk, encoding, callback) {

@@ -16,6 +16,7 @@ import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function Page() {
   return /* @__PURE__ */ jsxs2("html", { children: [
     /* @__PURE__ */ jsx2("h1", { children: "Pop Music" }),
+    /* @__PURE__ */ jsx2("input", { type: "text" }),
     /* @__PURE__ */ jsx2(Suspense, { fallback: "loading", children: /* @__PURE__ */ jsx2(Album, {}) })
   ] });
 }
