@@ -1,8 +1,5 @@
-```
-npm install
-npm run dev
-```
+# Branch List
 
-```
-open http://localhost:3000
-```
+1. main: ssg
+2. streaming: streaming html
+3. rsc: react server components
