@@ -1,12 +1,12 @@
 import { Album } from "./album";
 import { Suspense } from "react";
+import Loading from "./loading";
 export default function Page() {
   return (
-    <html>
-      <h1>Pop Music</h1>
-      <Suspense fallback="loading">
+    <div className="container mx-auto min-h-screen flex justify-center items-center">
+      <Suspense fallback={<Loading></Loading>}>
         <Album />
       </Suspense>
-    </html>
+    </div>
   );
 }

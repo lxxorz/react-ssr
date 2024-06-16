@@ -1,10 +1,9 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
-import { Readable, Transform } from 'node:stream';
 import { build as esbuild } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { logger } from 'hono/logger';
-
+import { serveStatic } from '@hono/node-server/serve-static';
 import { createElement } from 'react';
 
 // @ts-ignore
@@ -24,15 +23,31 @@ function resolveBuild(path = '') {
 
 const app = new Hono()
 
+app.use("/build/*", serveStatic({ root: "./src" }))
+
 export const customLogger = (message: string, ...rest: string[]) => {
   console.log(message, ...rest)
 }
 
 app.use(logger(customLogger))
 
-app.get('/rsc', async (ctx) => {
+app.get("/", async (c) => {
   await build();
 
+  return c.html(`
+    <html>
+      <head>
+        <title>React Server DOM</title>
+      </head>
+      <body>
+        <div id="root"></div>
+         <script src="https://cdn.tailwindcss.com"></script>
+        <script type="module" src="./build/_client.js"></script>
+      </body>
+    </html>
+`)
+})
+app.get('/rsc', async (ctx) => {
   // @ts-ignore
   const Page = (await import("./build/page.js")).default;
 
@@ -55,9 +70,18 @@ async function build() {
     format: 'esm',
     logLevel: 'error',
     jsx: "transform",
-    entryPoints: [resolveApp('page.jsx')],
+    entryPoints: [resolveApp('page.tsx')],
     outdir: resolveBuild(),
     packages: 'external',
+  })
+
+  await esbuild({
+    bundle: true,
+    format: 'esm',
+    logLevel: 'error',
+    jsx: "transform",
+    entryPoints: [resolveApp('_client.tsx')],
+    outdir: resolveBuild(),
   })
 }
 

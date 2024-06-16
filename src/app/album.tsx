@@ -1,15 +1,24 @@
 export async function Album() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/albums");
-  const albums = await response.json();
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const response = await fetch(
+    "https://jsonplaceholder.typicode.com/albums/1/photos"
+  );
+  const photos = await response.json();
+
   return (
-    <div>
-      <h1>Albums</h1>
-      <ul>
-        {albums.map((album: any) => (
-          <li key={album.id}>{album.title}</li>
+    <div className="flex flex-col items-center">
+      <h1 className="font-bold text-lg">Album</h1>
+      <div className="grid grid-cols-2 gap-4">
+        {photos.map((photo: any) => (
+          <div key={photo.id} className="flex flex-col items-center">
+            <p className="text-center">{photo.title}</p>
+            <img
+              src={photo.thumbnailUrl}
+              alt={photo.title}
+              className="w-48 h-48 object-cover rounded-lg shadow-lg"
+            />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

@@ -1,8 +1,7 @@
-```
-npm install
-npm run dev
-```
+# React RSC Implementation
 
-```
-open http://localhost:3000
-```
+TODO
+
+- [x] streaming server component
+- [ ] ssr client component
+发的
