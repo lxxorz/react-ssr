@@ -1,4 +1,5 @@
 // src/app/album.tsx
+import Like from "./like.js";
 import { jsx, jsxs } from "react/jsx-runtime";
 async function Album() {
   const response = await fetch(
@@ -7,7 +8,7 @@ async function Album() {
   const photos = await response.json();
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center", children: [
     /* @__PURE__ */ jsx("h1", { className: "font-bold text-lg", children: "Album" }),
-    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: photos.map((photo) => /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center", children: [
+    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: photos.map((photo) => /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-1", children: [
       /* @__PURE__ */ jsx("p", { className: "text-center", children: photo.title }),
       /* @__PURE__ */ jsx(
         "img",
@@ -16,7 +17,8 @@ async function Album() {
           alt: photo.title,
           className: "w-48 h-48 object-cover rounded-lg shadow-lg"
         }
-      )
+      ),
+      /* @__PURE__ */ jsx(Like, {})
     ] }, photo.id)) })
   ] });
 }
