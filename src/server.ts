@@ -3,15 +3,8 @@ import { Hono } from 'hono';
 import { build as esbuild } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { logger } from 'hono/logger';
-import { ReactNode, createElement } from 'react';
-import { serveStatic } from '@hono/node-server/serve-static';
-// import * as ReactServerDom from 'react-server-dom-webpack/server.browser';
-import { readFile, writeFile } from 'node:fs/promises';
-// import { parse } from 'es-module-lexer';
-import { relative } from 'node:path';
-
+import { createElement } from 'react';
 import { renderToString } from "react-dom/server"
-import { hydrateRoot } from 'react-dom/client';
 
 
 const appDir = new URL('./app/', import.meta.url);
@@ -42,6 +35,7 @@ app.get('/', async (ctx) => {
   const html = renderToString(createElement(Page));
   return ctx.html(html)
 })
+
 
 async function build() {
   await esbuild({
