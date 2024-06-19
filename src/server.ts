@@ -3,14 +3,11 @@ import { Hono } from 'hono';
 import { Readable, Transform } from 'node:stream';
 import { build as esbuild } from 'esbuild';
 import { fileURLToPath } from 'node:url';
-import { logger } from 'hono/logger';
-
+import { serveStatic } from '@hono/node-server/serve-static';
 import { createElement } from 'react';
-
 
 import { renderToPipeableStream } from "react-dom/server"
 import { BodyData } from 'hono/utils/body';
-
 
 const appDir = new URL('./app/', import.meta.url);
 const buildDir = new URL('./build/', import.meta.url);
@@ -25,15 +22,9 @@ function resolveBuild(path = '') {
 
 const app = new Hono()
 
-export const customLogger = (message: string, ...rest: string[]) => {
-  console.log(message, ...rest)
-}
-
-app.use(logger(customLogger))
-
+app.use('/build/*', serveStatic({root: './src'}))
 app.get('/', async (ctx) => {
-  await build();
-
+  await build()
   // @ts-ignore
   const Page = (await import("./build/page.js")).default;
 
@@ -54,7 +45,7 @@ app.get('/', async (ctx) => {
 
   // @ts-ignore
   const { pipe } = renderToPipeableStream(comp, {
-    bootstrapScripts: [],
+    bootstrapScripts: ["./build/_client.js"],
 
     // for streaming
     onShellReady() {
@@ -65,13 +56,6 @@ app.get('/', async (ctx) => {
     // onAllReady() {
     //   pipe(transform)
     // },
-    onShellError(error) {
-      console.error(error)
-    },
-
-    onError(error) {
-      console.error(error)
-    }
   })
 
   const stream = Readable.toWeb(transform) as ReadableStream<BodyData>;
@@ -90,9 +74,19 @@ async function build() {
     format: 'esm',
     logLevel: 'error',
     jsx: "transform",
-    entryPoints: [resolveApp('page.jsx')],
+    entryPoints: [resolveApp('page.tsx')],
     outdir: resolveBuild(),
     packages: 'external',
+  })
+
+  await esbuild({
+    bundle: true,
+    format: 'esm',
+    logLevel: 'error',
+    jsx: "transform",
+    entryPoints: [resolveApp('_client.tsx')],
+    outdir: resolveBuild(),
+
   })
 }
 

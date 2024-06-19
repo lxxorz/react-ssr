@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "tsx   src/server.ts"
+    "dev": "tsx src/server.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.11.3",

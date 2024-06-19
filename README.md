@@ -1,8 +1,4 @@
-```
-npm install
-npm run dev
-```
+# TODO
 
-```
-open http://localhost:3000
-```
+- [x] streaming html
+- [x] hydration

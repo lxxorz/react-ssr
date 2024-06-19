@@ -1,12 +1,19 @@
 import { Album } from "./album";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 export default function Page() {
+  const [count, setCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <html>
       <h1>Pop Music</h1>
-
-      <input type="text" />
-
+      {mounted && (
+        <button onClick={() => setCount(count + 1)}>click me {count}</button>
+      )}
       <Suspense fallback="loading">
         <Album />
       </Suspense>
