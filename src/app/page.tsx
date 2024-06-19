@@ -1,5 +1,6 @@
 import { Album } from "./album";
 import { Suspense, useEffect, useState } from "react";
+
 export default function Page() {
   const [count, setCount] = useState(0);
   const [mounted, setMounted] = useState(false);
